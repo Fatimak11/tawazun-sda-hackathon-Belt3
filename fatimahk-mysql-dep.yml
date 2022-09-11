@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-dep-pod
+  namespace: fatimahalkhamees-tawazun
+  labels:
+    app: mysql
+    name: fatimahalkhamees
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+
+        env:
+        - name: MYSQL_PASSWORD
+          value: Fatm20
+        - name: MYSQL_DATABASE
+          value: tawazun
+
+        args:
+          - /bin/sh
+          - -c 
+          - touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600
+        livenessProbe:
+          exec:
+            command:
+              - cat
+              - /tmp/healthy
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          
+        ports:
+        - name:  mysql-liveness-port
+          containerPort: 3306
+        startupProbe:
+          httpGet:
+            path: /maven.html
+            port: liveness-port
+          failureThreshold: 30
+          periodSeconds: 10
+
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+
+      volumes:
+         - name: mysql-storage
+           persistentVolumeClaim:
+              claimName: mysql-pvc

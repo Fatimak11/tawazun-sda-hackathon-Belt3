@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tawazun-deployment
+  namespace: fatimahalkhamees-tawazun
+  labels:
+    app: tawazun
+    name: fatimahalkhamees
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tawazun
+      service: tawazun-svc
+  template:
+    metadata:
+      name: tawazun
+      labels:
+        app: tawazun
+        service: tawazun-svc
+    spec:
+      containers:
+      - name: tawazun
+        image: fatimahk27/tawazun-app
+
+        env:
+         - name: DB_URL
+           value: mysql 
+         - name: DB_PORT
+           value: '3306'
+         - name: DB_NAME
+           value: tawazun
+         - name: DB_USERNAME
+           value: root
+         - name: DB_PASSWORD
+           value: Fatm20
+
+        args:
+          - /bin/sh
+          - -c 
+          - touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600
+
+        livenessProbe:
+          exec:
+            command:
+              - cat
+              - /tmp/healthy
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          
+        ports:
+        - name: liveness-port
+          containerPort: 8080
+        startupProbe:
+          httpGet:
+            path: /maven.html
+            port: liveness-port
+          failureThreshold: 30
+          periodSeconds: 10

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-svc
+  namespace: fatimahalkhamees-tawazun
+  labels:
+    app: tawazun
+    name: fatimahalkhamees
+spec:
+  type: ClusterIP
+  selector:
+    app: mysql
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
