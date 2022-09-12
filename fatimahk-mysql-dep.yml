@@ -58,10 +58,10 @@ spec:
           failureThreshold: 30
           periodSeconds: 10
           
-    volumes: 
-    - name: mysql-storage
-      persistentVolumeClaim:
-        claimName:  mysql-pvc
+      volumes: 
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName:  mysql-pvc
 
 
           
