@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tawazun-deployment
-  namespace: fatimahalkhamees-tawazun
+  namespace: fatimah-khamees-tawazun
   labels:
     app: tawazun
     name: fatimahalkhamees

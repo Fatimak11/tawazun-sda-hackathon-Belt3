@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mysql-pvc
-  namespace: fatimahalkhamees-tawazun
+  namespace: fatimah-khamees-tawazun
   labels:
     app: tawazun
     name: fatimahalkhamees

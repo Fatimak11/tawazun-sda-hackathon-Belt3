@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ResourceQuota
 metadata:
  name: fatimahk-namespace
- namespace:  fatimahk-khamees-tawazun
+ namespace:  fatimah-khamees-tawazun
 spec:
  hard:
    requests.cpu: "2"
