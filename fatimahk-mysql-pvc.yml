@@ -12,7 +12,5 @@ spec:
   storageClassName: manual
   resources:
     requests:
-      storage:  4Gi
-  selector:
-    matchLabels:
-      app: tawazun
+      storage:  5Gi
+ 

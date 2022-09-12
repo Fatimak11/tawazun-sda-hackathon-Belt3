@@ -1,23 +1,21 @@
-FROM maven:3.8.6-openjdk-11 AS build
+FROM maven:3.8.6-openjdk-11
 
-ENV DB_URL=mysql
-ENV DB_PORT=3306
-ENV DB_NAME=tawazun 
-ENV DB_USERNAME=root
-ENV DB_PASSWORD=Fatm20
+ENV MYSQL_URL=mysql
+ENV MYSQL_PORT=3306
+ENV MYSQL_NAME=tawazun-db
+ENV MYSQL_USERNAME=root
+ENV MYSQL_PASSWORD=fatm20
 
 WORKDIR /app
 
-COPY pom.xml /app/pom.xml
-RUN ["mvn", "dependency:resolve"]
-RUN ["mvn", "clean"]
+ADD pom.xml .
 
-COPY ["/src", "/app/src"]
-RUN ["mvn", "package"]
+RUN ["/usr/local/bin/mvn-entrypoint.sh","mvn","verify","clean","--fail-never"]
 
-FROM openjdk:11-jre-slim
+COPY . .
 
-COPY --from=build /app/target/tawazun.war /
+RUN mvn package
 
 EXPOSE 8080
-CMD ["java", "-jar", "/tawazun.war"]
+
+ENTRYPOINT ["java","-jar","target/tawazun.war"]

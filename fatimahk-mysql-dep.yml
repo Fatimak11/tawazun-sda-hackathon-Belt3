@@ -21,38 +21,50 @@ spec:
         image: mysql:latest
 
         env:
-        - name: MYSQL_PASSWORD
-          value: Fatm20
+        - name: MYSQL_ROOT_PASSWORD
+          value: fatm20
         - name: MYSQL_DATABASE
-          value: tawazun
+          value: tawazun-db
+        
 
-        args:
-          - /bin/sh
-          - -c 
-          - touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600
+        ports:
+        - containerPort: 3306
+          name: mysql
+
+        volumeMounts:
+        - name:  mysql-storage
+          mountPath: /var/lib/mysql  
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1"
+          limits:
+            memory: "2Gi"
+            cpu: "2"
         livenessProbe:
           exec:
             command:
-              - cat
-              - /tmp/healthy
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          
-        ports:
-        - name:  mysql-liveness-port
-          containerPort: 3306
+              - bash
+              - "-c"
+              - |
+                mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD ping &> /dev/null
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
         startupProbe:
-          httpGet:
-            path: /maven.html
-            port: liveness-port
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 60
           failureThreshold: 30
           periodSeconds: 10
+          
+    volumes:
+    - name: mysql-storage
+      persistentVolumeClaim:
+        claimName:  mysql-pvc
 
-        volumeMounts:
-        - name: mysql-storage
-          mountPath: /var/lib/mysql
 
-      volumes:
-         - name: mysql-storage
-           persistentVolumeClaim:
-              claimName: mysql-pvc
+          
+      
+
+   
